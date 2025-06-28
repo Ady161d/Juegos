@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rompecabezas 4x4</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+    }
+    #puzzle {
+      width: 400px;
+      height: 400px;
+      margin: 20px auto;
+      display: flex;
+      flex-wrap: wrap;
+      border: 2px solid #000;
+      pointer-events: auto;
+    }
+    .tile {
+      width: 100px;
+      height: 100px;
+      background-image: url('8487834ad95b139b8cc66bd2d9540338.jpg');
+      background-size: 400px 400px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .empty {
+      background: #fff;
+    }
+    #message {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+    #timer {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Rompecabezas 4x4</h1>
+<div id="timer">Tiempo: 60 s</div>
+<div id="puzzle"></div>
+<div id="message"></div>
+
+<script>
+  const puzzle = document.getElementById('puzzle');
+  const message = document.getElementById('message');
+  const timerDisplay = document.getElementById('timer');
+
+  let tiles = Array.from({ length: 15 }, (_, i) => i); // [0..14]
+  tiles.push(15); // empty tile at the end
+  let emptyIndex = 15;
+  let timeLeft = 60;
+  let timer;
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    // Asegura que el rompecabezas tenga solución
+    if (!isSolvable(array)) shuffle(array);
+  }
+
+  function isSolvable(arr) {
+    let invCount = 0;
+    for (let i = 0; i < 15; i++) {
+      for (let j = i + 1; j < 15; j++) {
+        if (arr[i] !== 15 && arr[j] !== 15 && arr[i] > arr[j]) invCount++;
+      }
+    }
+    const row = Math.floor(arr.indexOf(15) / 4);
+    return (invCount + row) % 2 === 0;
+  }
+
+  function render() {
+    puzzle.innerHTML = '';
+    tiles.forEach((index, i) => {
+      const div = document.createElement('div');
+      if (index === 15) {
+        div.className = 'tile empty';
+      } else {
+        div.className = 'tile';
+        const x = (index % 4) * -100;
+        const y = Math.floor(index / 4) * -100;
+        div.style.backgroundPosition = `${x}px ${y}px`;
+      }
+      div.addEventListener('click', () => move(i));
+      puzzle.appendChild(div);
+    });
+  }
+
+  function move(i) {
+    const validMoves = [i - 1, i + 1, i - 4, i + 4];
+    if (validMoves.includes(emptyIndex) &&
+        !(i % 4 === 0 && emptyIndex === i - 1) &&
+        !(i % 4 === 3 && emptyIndex === i + 1)) {
+      [tiles[i], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[i]];
+      emptyIndex = i;
+      render();
+      checkWin();
+    }
+  }
+
+  function checkWin() {
+    for (let i = 0; i < 15; i++) {
+      if (tiles[i] !== i) return;
+    }
+    clearInterval(timer);
+    message.textContent = '¡Ganaste! ( ◕ᗜ◕ )';
+    puzzle.style.pointerEvents = 'none';
+  }
+
+  function startTimer() {
+    timer = setInterval(() => {
+      timeLeft--;
+      timerDisplay.textContent = `Tiempo: ${timeLeft}`;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        message.textContent = ' ¿¡Perdiste!? ';
+        puzzle.style.pointerEvents = 'none';
+      }
+    }, 1000);
+  }
+
+  function iniciarJuego() {
+    shuffle(tiles);
+    emptyIndex = tiles.indexOf(15);
+    render();
+    startTimer();
+  }
+
+  iniciarJuego();
+</script>
+
+</body>
+</html>
