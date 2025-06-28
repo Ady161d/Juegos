@@ -43,7 +43,7 @@
 <body>
 
 <h1>Rompecabezas 4x4</h1>
-<div id="timer">Tiempo: 60 s</div>
+<div id="timer">Tiempo: 100 s</div>
 <div id="puzzle"></div>
 <div id="message"></div>
 
@@ -55,7 +55,7 @@
   let tiles = Array.from({ length: 15 }, (_, i) => i); // [0..14]
   tiles.push(15); // empty tile at the end
   let emptyIndex = 15;
-  let timeLeft = 60;
+  let timeLeft = 100;
   let timer;
 
   function shuffle(array) {
@@ -122,7 +122,7 @@
       timerDisplay.textContent = `Tiempo: ${timeLeft}`;
       if (timeLeft <= 0) {
         clearInterval(timer);
-        message.textContent = ' ¿¡Perdiste!? ';
+        message.textContent = ' ¿¡Perdiste!? •᷄‎ࡇ•᷅ ';
         puzzle.style.pointerEvents = 'none';
       }
     }, 1000);
