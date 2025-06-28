@@ -4,40 +4,51 @@
   <meta charset="UTF-8">
   <title>Rompecabezas 4x4</title>
   <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      background-color: #f0f0f0;
-    }
-    #puzzle {
-      width: 400px;
-      height: 400px;
-      margin: 20px auto;
-      display: flex;
-      flex-wrap: wrap;
-      border: 2px solid #000;
-      pointer-events: auto;
-    }
-    .tile {
-      width: 100px;
-      height: 100px;
-      background-image: url('8487834ad95b139b8cc66bd2d9540338.jpg');
-      background-size: 400px 400px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-    .empty {
-      background: #fff;
-    }
-    #message {
-      font-size: 24px;
-      margin-top: 10px;
-    }
-    #timer {
-      font-size: 20px;
-      margin-top: 10px;
-    }
+  <style>
+  body {
+    font-family: sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+  }
+
+  #puzzle {
+    width: 90vw;
+    height: 90vw;
+    max-width: 400px;
+    max-height: 400px;
+    margin: 20px auto;
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid #000;
+    pointer-events: auto;
+    position: relative;
+  }
+
+  .tile {
+    width: 25%;
+    height: 25%;
+    background-image: url('8487834ad95b139b8cc66bd2d9540338.jpg');
+    background-size: 100% 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+
+  .empty {
+    background: #fff;
+  }
+
+  #message {
+    font-size: 20px;
+    margin-top: 10px;
+  }
+
+  #timer {
+    font-size: 18px;
+    margin-top: 10px;
+  }
   </style>
 </head>
 <body>
@@ -79,21 +90,21 @@
   }
 
   function render() {
-    puzzle.innerHTML = '';
-    tiles.forEach((index, i) => {
-      const div = document.createElement('div');
-      if (index === 15) {
-        div.className = 'tile empty';
-      } else {
-        div.className = 'tile';
-        const x = (index % 4) * -100;
-        const y = Math.floor(index / 4) * -100;
-        div.style.backgroundPosition = `${x}px ${y}px`;
+  puzzle.innerHTML = '';
+  tiles.forEach((index, i) => {
+    const div = document.createElement('div');
+    div.className = (index === 15) ? 'tile empty' : 'tile';
+
+    if (index !== 15) {
+      const x = (index % 4) * 25;
+      const y = Math.floor(index / 4) * 25;
+      div.style.backgroundPosition = `${-x}% ${-y}%`;
+    }
+
+    div.addEventListener('click', () => move(i));
+    puzzle.appendChild(div);
+  });
       }
-      div.addEventListener('click', () => move(i));
-      puzzle.appendChild(div);
-    });
-  }
 
   function move(i) {
     const validMoves = [i - 1, i + 1, i - 4, i + 4];
